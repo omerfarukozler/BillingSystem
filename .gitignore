@@ -1,0 +1,41 @@
+# Build artifacts
+bin/
+obj/
+Debug/
+Release/
+
+# Visual Studio files
+.vs/
+
+# VSCode
+.vscode/
+
+# SQLite database
+*.db
+*.db-wal
+*.db-shm
+
+# User-specific files
+*.user
+*.suo
+
+# Logs
+*.log
+
+# NuGet
+*.nupkg
+packages/
+
+# ASP.NET cache
+*.pid
+*.tmp
+
+# Rider / JetBrains
+.idea/
+
+# OS generated
+.DS_Store
+Thumbs.db
+
+# EF Core
+Migrations/*.Designer.cs
