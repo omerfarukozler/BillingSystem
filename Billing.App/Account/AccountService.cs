@@ -1,3 +1,4 @@
+using Billing.Domain.Account;
 public class AccountService
 {
     private readonly IAccountRepository _accountRepo;

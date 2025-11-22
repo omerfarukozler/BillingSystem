@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Billing.Domain.Invoice;
 using Billing.Domain.Customer;
 using Billing.Domain.Payment;
+using Billing.Domain.Account;
 
 namespace Billing.Infra.Data;
 
@@ -15,6 +16,7 @@ public class BillingDbContext : DbContext
     public DbSet<Invoice> Invoices { get; set; }
     public DbSet<Customer> Customers { get; set; }
     public DbSet<Payment> Payments { get; set; }
+    public DbSet<Account> Accounts => Set<Account>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
