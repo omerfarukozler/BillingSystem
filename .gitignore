@@ -39,3 +39,7 @@ Thumbs.db
 
 # EF Core
 Migrations/*.Designer.cs
+
+appsettings.json
+appsettings.Development.json
+
