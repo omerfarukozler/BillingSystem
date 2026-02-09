@@ -2,6 +2,7 @@ using Billing.Infra.Data;
 using Billing.Infra.Auth;
 using Billing.Infra.Data.Repositories;
 using Billing.Domain.Account;
+using Billing.Domain.Customer;
 using Billing.App;
 
 using Microsoft.EntityFrameworkCore;
@@ -36,10 +37,12 @@ builder.Services.AddScoped<IPasswordHasher, BcryptPasswordHasher>();
 // JWT generator (Infra)
 // Domain interface → Infra implementation
 builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
+builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 
 
 // App katmanı servisleri
 builder.Services.AddScoped<AccountService>();
+builder.Services.AddScoped<CustomerService>();
 
 // ----------------------------
 // JWT Authentication

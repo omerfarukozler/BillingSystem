@@ -32,7 +32,7 @@ public class AccountController : ControllerBase
         if (account == null)
             return Unauthorized(new { message = "Invalid credentials" });
 
-        var token = _jwt.GenerateToken(account);
+        var token = _service.LoginAsync(account.Email, request.Password);
 
         return Ok(new { token });
     }
