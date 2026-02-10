@@ -29,5 +29,4 @@ public class CustomerController : ControllerBase
         await _service.DeleteAsync(customerId);
         return Ok(new { message = "Customer deleted" });
     }
-
 }

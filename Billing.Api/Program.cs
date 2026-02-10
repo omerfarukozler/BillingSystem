@@ -5,7 +5,6 @@ using Billing.Domain.Account;
 using Billing.Domain.Customer;
 using Billing.App;
 
-
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -13,9 +12,22 @@ using System.Text;
 using Billing.Infra.Security;
 using Billing.App.Ports;
 using Billing.Api.Adapters;
+using Billing.Api.Middleware;
 using System.IdentityModel.Tokens.Jwt;
 
+using Microsoft.AspNetCore.Mvc.ApplicationModels;
+using Microsoft.AspNetCore.Routing;
+
 var builder = WebApplication.CreateBuilder(args);
+
+// ----------------------------
+// Routing (lowercase urls + lowercase [controller])
+// ----------------------------
+builder.Services.AddRouting(options =>
+{
+    options.LowercaseUrls = true;
+    // options.LowercaseQueryStrings = true; // istersen aç
+});
 
 // ----------------------------
 // Database
@@ -26,28 +38,27 @@ builder.Services.AddDbContext<BillingDbContext>(options =>
 // ----------------------------
 // Controllers
 // ----------------------------
-builder.Services.AddControllers();
+builder.Services.AddControllers(options =>
+{
+    // [controller], [action] tokenlarını lowercase'a çevirir (Swagger path dahil)
+    options.Conventions.Add(new RouteTokenTransformerConvention(new LowercaseTransformer()));
+});
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // ----------------------------
-// Dependency Injection 
+// Dependency Injection
 // ----------------------------
-
-// Domain interfaces → Infra implementations
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<IPasswordHasher, BcryptPasswordHasher>();
 
-// JWT generator (Infra)
-// Domain interface → Infra implementation
 builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
+
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ICurrentAccount, HttpCurrentAccount>();
 
-
-
-// App katmanı servisleri
 builder.Services.AddScoped<AccountService>();
 builder.Services.AddScoped<CustomerService>();
 
@@ -88,10 +99,22 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseMiddleware<GlobalExceptionMiddleware>();
+
+app.UseHttpsRedirection(); // MapControllers'dan önce
+
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-app.UseHttpsRedirection();
 
 app.Run();
+
+// ----------------------------
+// Helpers
+// ----------------------------
+sealed class LowercaseTransformer : IOutboundParameterTransformer
+{
+    public string? TransformOutbound(object? value)
+        => value?.ToString()?.ToLowerInvariant();
+}

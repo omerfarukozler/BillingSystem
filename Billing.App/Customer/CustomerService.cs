@@ -24,9 +24,11 @@ public class CustomerService
     public async Task DeleteAsync(Guid customerId)
     {
         var customer = await _customerRepo.GetByIdAsync(customerId);
-        if (customer is null) return;
+        if (customer is null)
+            throw new KeyNotFoundException("Customer not found.");
 
-        if (customer.AccountId != _currentAccount.AccountId) return;
+        if (customer.AccountId != _currentAccount.AccountId)
+            throw new UnauthorizedAccessException("You are not authorized to delete this customer.");
 
         await _customerRepo.DeleteAsync(customer);
     }

@@ -1,6 +1,6 @@
 using Billing.App;
 using Billing.Domain.Account;
-using Billing.Infra.Auth;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Billing.Api.Controllers;
@@ -33,6 +33,15 @@ public class AccountController : ControllerBase
         var token = _service.LoginAsync(account.Email, request.Password);
 
         return Ok(new { token });
+    }
+
+    [Authorize]
+    [HttpGet("customer-list")]
+    [ProducesResponseType(typeof(ListCustomerResponse[]), StatusCodes.Status200OK)]
+    public async Task<IActionResult> ListCustomers()
+    {
+        var customers = await _service.ListCustomersAsync();
+        return Ok(customers);
     }
 }
 
