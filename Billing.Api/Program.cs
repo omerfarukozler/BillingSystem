@@ -5,11 +5,15 @@ using Billing.Domain.Account;
 using Billing.Domain.Customer;
 using Billing.App;
 
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Billing.Infra.Security;
+using Billing.App.Ports;
+using Billing.Api.Adapters;
+using System.IdentityModel.Tokens.Jwt;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,6 +42,9 @@ builder.Services.AddScoped<IPasswordHasher, BcryptPasswordHasher>();
 // Domain interface → Infra implementation
 builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<ICurrentAccount, HttpCurrentAccount>();
+
 
 
 // App katmanı servisleri
@@ -47,6 +54,8 @@ builder.Services.AddScoped<CustomerService>();
 // ----------------------------
 // JWT Authentication
 // ----------------------------
+JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+
 var jwt = builder.Configuration.GetSection("Jwt");
 var key = Encoding.UTF8.GetBytes(jwt["Key"]!);
 

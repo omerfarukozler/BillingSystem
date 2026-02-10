@@ -16,4 +16,14 @@ public class CustomerRepository : ICustomerRepository
         dbContext.Customers.Add(customer);
         await dbContext.SaveChangesAsync();
     }
+    public async Task DeleteAsync(Customer customer)
+    {
+        dbContext.Customers.Remove(customer);
+        await dbContext.SaveChangesAsync();
+    }
+    public async Task<Customer?> GetByIdAsync(Guid customerId)
+    {
+        return await dbContext.Customers.SingleOrDefaultAsync(x => x.Id == customerId);
+    }
+
 }

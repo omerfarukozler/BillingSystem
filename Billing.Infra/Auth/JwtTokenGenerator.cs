@@ -26,12 +26,13 @@ public class JwtTokenGenerator : IJwtTokenGenerator
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
-        var claims = new[]
-        {
+        var claims = new[]{
             new Claim(JwtRegisteredClaimNames.Sub, account.Id.ToString()),
+            new Claim(ClaimTypes.NameIdentifier, account.Id.ToString()),
             new Claim(JwtRegisteredClaimNames.Email, account.Email),
             new Claim("name", account.Name)
         };
+
 
         var token = new JwtSecurityToken(
             issuer: issuer,

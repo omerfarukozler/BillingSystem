@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Billing.Api.Controllers;
+
 [Authorize]
 [ApiController]
 [Route("api/[controller]")]
@@ -18,7 +19,15 @@ public class CustomerController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> AddCustomer(AddCustomerRequest request)
     {
-        await _service.AddAsync(request.AccountId, request.Name, request.Email);
+        await _service.AddAsync(request.Name, request.Email);
         return Ok(new { message = "Customer created" });
     }
+
+    [HttpDelete("{customerId:guid}")]
+    public async Task<IActionResult> DeleteCustomer(Guid customerId)
+    {
+        await _service.DeleteAsync(customerId);
+        return Ok(new { message = "Customer deleted" });
+    }
+
 }

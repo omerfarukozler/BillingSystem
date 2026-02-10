@@ -10,12 +10,10 @@ namespace Billing.Api.Controllers;
 public class AccountController : ControllerBase
 {
     private readonly AccountService _service;
-    private readonly Domain.Account.IJwtTokenGenerator _jwt;
 
-    public AccountController(AccountService service, Domain.Account.IJwtTokenGenerator jwt)
+    public AccountController(AccountService service)
     {
         _service = service;
-        _jwt = jwt;
     }
 
     [HttpPost("signup")]
